@@ -5,8 +5,7 @@
   "build": {
     "production": {
       "android": {
-        "buildType": "apk",
-        "jdk": "17"
+        "buildType": "apk"
       }
     }
   }
