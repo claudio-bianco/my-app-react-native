@@ -26,8 +26,11 @@ jobs:
       - name: Verify EAS CLI version
         run: eas --version
 
-      - name: Authenticate with Expo
-        run: eas whoami || eas session:login --token ${{ secrets.EXPO_TOKEN }}
+      - name: Authenticate with Expo using token
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          echo "$EXPO_TOKEN" | eas login --token
 
       - name: Start Android build (APK)
         run: eas build --platform android --profile production --non-interactive
