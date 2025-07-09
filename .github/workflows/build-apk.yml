@@ -21,7 +21,10 @@ jobs:
           node-version: 18
 
       - name: Install EAS CLI
-        run: npm install -g eas-cli
+        run: npm install -g eas-cli@latest
+        
+      - name: Verify EAS CLI version
+        run: eas --version
 
       - name: Authenticate with Expo
         run: eas whoami || eas session:login --token ${{ secrets.EXPO_TOKEN }}
