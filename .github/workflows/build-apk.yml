@@ -26,6 +26,19 @@ jobs:
       - name: Build APK with EAS
         run: eas build --platform android --profile production --non-interactive
 
-      - name: Show build details
-        run: eas build:list --limit 1 --json --non-interactive
+      - name: Get latest build info (JSON)
+        id: get_apk_url
+        run: |
+          apk_url=$(eas build:list --platform android --limit 1 --json --non-interactive | jq -r '.[0].artifacts.buildUrl')
+          echo "APK_URL=$apk_url" >> "$GITHUB_ENV"
 
+      - name: Download APK
+        run: |
+          mkdir -p artifacts
+          curl -L "$APK_URL" -o artifacts/my-app.apk
+
+      - name: Upload APK to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-app-apk
+          path: artifacts/my-app.apk
