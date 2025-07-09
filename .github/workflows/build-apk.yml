@@ -23,11 +23,6 @@ jobs:
       - name: Install latest EAS CLI
         run: npm install -g eas-cli@latest
 
-      - name: Create Java 17 env file for EAS
-        run: |
-          mkdir -p .eas
-          echo '{ "ANDROID_BUILD_JAVA_HOME": "/opt/build/android/java/openjdk/jdk-17" }' > .eas/environment.json
-
       - name: Build APK with EAS
         run: eas build --platform android --profile production --non-interactive
 
