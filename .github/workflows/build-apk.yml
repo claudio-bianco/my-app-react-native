@@ -1,18 +1,19 @@
 name: Build APK with Expo EAS
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build-apk:
-    name: EAS Build (APK)
     runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -20,20 +21,12 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install EAS CLI
+      - name: Install latest EAS CLI
         run: npm install -g eas-cli@latest
-        
-      - name: Verify EAS CLI version
-        run: eas --version
 
-      - name: Authenticate with Expo using token
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          echo "$EXPO_TOKEN" | eas login --token
-
-      - name: Start Android build (APK)
+      - name: Build APK with EAS
         run: eas build --platform android --profile production --non-interactive
 
       - name: Show build details
-        run: eas build:list --limit=1
+        run: eas build:list --limit 1 --json
+
