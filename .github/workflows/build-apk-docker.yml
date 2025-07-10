@@ -20,6 +20,7 @@ jobs:
       - name: Run EAS local Android build
         run: |
           docker run --rm \
+            -e EAS_TOKEN=${{ secrets.EAS_TOKEN }} \
             -v ${{ github.workspace }}:/app \
             -w /app \
             eas-local-builder \
