@@ -1,41 +1,46 @@
-name: EAS Local Android Build
+name: EAS Local Android Build (Expo)
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
-  workflow_dispatch:
 
 jobs:
-  build:
+  eas-local-build:
     runs-on: ubuntu-latest
-    env:
-      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📦 Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: ⚙️ Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install Expo CLI and EAS CLI
-        run: npm install -g expo-cli eas-cli
+      - name: 🧪 Install dependencies
+        run: npm ci
 
-      - name: Install project dependencies
-        run: npm install
+      - name: 🛠️ Set up Git (for EAS)
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "you@example.com"
+          git init
+          git add .
+          git commit -m "init" || echo "Already committed"
 
-      - name: Start emulator and run EAS build
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          script: |
-            eas build --platform android --local --output=app-release.apk
+      - name: 📥 Install Expo CLI and EAS CLI
+        run: |
+          npm install -g expo-cli eas-cli
 
-      - name: Upload APK
+      - name: 🏗️ Run EAS local build for Android
+        env:
+          EAS_ACCESS_TOKEN: ${{ secrets.EAS_ACCESS_TOKEN }}
+        run: |
+          eas build --platform android --local --non-interactive --output=app-release.apk
+
+      - name: 📤 Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk
+          name: expo-app-release
           path: app-release.apk
