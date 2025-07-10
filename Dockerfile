@@ -38,3 +38,11 @@ RUN yes | sdkmanager --licenses && \
 RUN npm install -g expo-cli eas-cli
 
 WORKDIR /app
+COPY . .
+
+# Initialize Git repo (required by EAS CLI)
+RUN git init && \
+    git config user.email "ci@example.com" && \
+    git config user.name "CI" && \
+    git add . && \
+    git commit -m "init"
