@@ -1,0 +1,30 @@
+# .github/workflows/eas-local-build.yml
+name: EAS Local Android Build with Docker
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build custom Docker image
+        run: docker build -t eas-local-builder .
+
+      - name: Run EAS local Android build
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            eas-local-builder \
+            eas build --platform android --local --output=app-release.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: app-release.apk
