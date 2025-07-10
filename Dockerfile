@@ -6,6 +6,14 @@ RUN apt-get update && apt-get install -y \
     build-essential libc6 libstdc++6 lib32z1 libbz2-1.0 libncurses5 \
     libtinfo5 libx11-6 libgl1-mesa-glx
 
+# Install Node.js v20 (clean installation)
+RUN apt-get update && \
+    apt-get remove -y nodejs libnode-dev && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set environment variables
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
 ENV PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
